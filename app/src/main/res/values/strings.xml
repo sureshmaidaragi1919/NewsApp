@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">News App</string>
+    <string name="app_no_internet">Please check the internet connections</string>
+    <string name="app_sort_by_recent">Recent</string>
+    <string name="app_sort_by_popular">Popular</string>
+    <string name="app_retry_btn">Retry\n</string>
+</resources>
