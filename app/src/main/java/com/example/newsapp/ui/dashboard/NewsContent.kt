@@ -43,6 +43,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -129,7 +132,7 @@ private fun ShowList(
             contentPadding = PaddingValues(dimensionResource(id = R.dimen.padding_8dp)),//margin at start and end
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8dp)), //space between each items in list
         ) {
-            items(data) {
+            items(data, key = { item -> item.id }) {
                 ListItemView(item = it, onItemClick = onItemClick)
             }
         }

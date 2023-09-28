@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -28,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.example.newsapp.R
@@ -42,41 +44,44 @@ class DashboardListActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CarousellNewsTheme {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
+                Surface {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
 
-                    var sortSelection by remember { mutableStateOf<SortBy>(SortBy.Recent) }
+                        var sortSelection by remember { mutableStateOf<SortBy>(SortBy.Recent) }
 
-                    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
-                        rememberTopAppBarState()
-                    )
-                    //todo Can make it collapsable toolbar by using scaffold
-                    TopAppBar(
-                        colors = TopAppBarDefaults.mediumTopAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.secondary,
-                            titleContentColor = MaterialTheme.colorScheme.surface,
-                            actionIconContentColor = MaterialTheme.colorScheme.background
-                        ), title = {
-                            Text(
-                                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_28dp)),
-                                text = getString(R.string.app_name),
-                            )
-                        }, actions = {
-                            CreateActionBarAndMenuOptions {
-                                sortSelection = it
-                            }
-                        }, scrollBehavior = scrollBehavior
-                    )
+                        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(
+                            rememberTopAppBarState()
+                        )
+                        //todo Can make it collapsable toolbar by using scaffold
+                        TopAppBar(
+                            colors = TopAppBarDefaults.mediumTopAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.secondary,
+                                titleContentColor = MaterialTheme.colorScheme.surface,
+                                actionIconContentColor = MaterialTheme.colorScheme.background
+                            ), title = {
+                                Text(
+                                    modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_28dp)),
+                                    text = getString(R.string.app_name),
+                                )
+                            }, actions = {
+                                CreateActionBarAndMenuOptions {
+                                    sortSelection = it
+                                }
+                            }, scrollBehavior = scrollBehavior
+                        )
 
-                    CreateNewsContentLazyColumn(sortBy = sortSelection,
-                        onItemClick = {
-                            Toast.makeText(
-                                this@DashboardListActivity,
-                                "Clicked Id : ${it.id}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        })
+                        var context = LocalContext.current.applicationContext
+                        CreateNewsContentLazyColumn(sortBy = sortSelection,
+                            onItemClick = {
+                                Toast.makeText(
+                                    context,
+                                    "Clicked Id : ${it.id}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            })
+                    }
                 }
             }
         }
