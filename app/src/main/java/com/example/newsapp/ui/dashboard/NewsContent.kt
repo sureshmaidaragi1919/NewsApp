@@ -77,11 +77,9 @@ fun CreateNewsContentLazyColumn(
 
         is NetworkResult.Success -> {
             dataState.data?.let {
-                CreateList(
-                    data = viewModel.sortDataList(sortBy = sortBy, dataList = it),
+                CreateList(data = viewModel.sortDataList(sortBy = sortBy, dataList = it),
                     onItemClick = onItemClick,
-                    onRefresh = { viewModel.refresh() }
-                )
+                    onRefresh = { viewModel.refresh() })
             } ?: run {
                 ErrorView(msg = dataState.message.toString()) {
                     viewModel.refresh()
@@ -109,9 +107,7 @@ fun LoaderView() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CreateList(
-        data: List<NewsItemModel>,
-        onItemClick: (NewsItemModel) -> Unit,
-        onRefresh: () -> Unit
+        data: List<NewsItemModel>, onItemClick: (NewsItemModel) -> Unit, onRefresh: () -> Unit
 ) {
 
 
