@@ -43,9 +43,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -61,18 +58,18 @@ import com.example.newsapp.util.isOnline
 fun CreateNewsContentLazyColumn(
         sortBy: SortBy,
         onItemClick: (NewsItemModel) -> Unit,
+        viewModel: DashboardViewModel = viewModel()
 ) {
-    val viewModel: DashboardViewModel = viewModel()
     val dataState by viewModel.dataLoadStateFlow.collectAsState(initial = NetworkResult.Loading())
     when (dataState) {
         is NetworkResult.Error -> {
-            ShowError(msg = dataState.message.toString()) {
+            ErrorView(msg = dataState.message.toString()) {
                 viewModel.refresh()
             }
         }
 
         is NetworkResult.Loading -> {
-            ShowLoader()
+            LoaderView()
         }
 
         is NetworkResult.SuccessWithNoResult -> { //do nothing
@@ -80,13 +77,13 @@ fun CreateNewsContentLazyColumn(
 
         is NetworkResult.Success -> {
             dataState.data?.let {
-                ShowList(
+                CreateList(
                     data = viewModel.sortDataList(sortBy = sortBy, dataList = it),
                     onItemClick = onItemClick,
-                    viewModel = viewModel
+                    onRefresh = { viewModel.refresh() }
                 )
             } ?: run {
-                ShowError(msg = dataState.message.toString()) {
+                ErrorView(msg = dataState.message.toString()) {
                     viewModel.refresh()
                 }
             }
@@ -95,7 +92,7 @@ fun CreateNewsContentLazyColumn(
 }
 
 @Composable
-fun ShowLoader() {
+fun LoaderView() {
     Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
@@ -111,17 +108,17 @@ fun ShowLoader() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun ShowList(
+private fun CreateList(
         data: List<NewsItemModel>,
         onItemClick: (NewsItemModel) -> Unit,
-        viewModel: DashboardViewModel,
+        onRefresh: () -> Unit
 ) {
 
 
     var refreshing by remember { mutableStateOf(false) }
     val state = rememberPullRefreshState(refreshing = refreshing, onRefresh = {
         refreshing = true
-        viewModel.refresh()
+        onRefresh.invoke()
         refreshing = false
     })
     Box(
@@ -218,7 +215,7 @@ private fun ListItemView(item: NewsItemModel, onItemClick: (NewsItemModel) -> Un
 }
 
 @Composable
-private fun ShowError(msg: String, onRetryClicked: () -> Unit) {
+private fun ErrorView(msg: String, onRetryClicked: () -> Unit) {
     val isOnline = LocalContext.current.isOnline()
     val isConnected by remember { mutableStateOf(isOnline) }
 

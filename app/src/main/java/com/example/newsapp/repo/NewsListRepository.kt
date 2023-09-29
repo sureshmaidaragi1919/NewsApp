@@ -27,7 +27,6 @@ class NewsListRepository @Inject constructor(
             }
             when (result) {
                 is NetworkResult.Success -> {
-                    newsListDao.nukeTable() //first clear old data and update with the latest
                     newsListDao.insertAll(mapToEntity(result.data)) //insert into db
                     emit(NetworkResult.Success(mapToModelData(result.data))) //send result to UI
                 }
