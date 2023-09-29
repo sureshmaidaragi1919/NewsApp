@@ -1,4 +1,4 @@
-# NewsApp
+# Android Compose NewsApp with MVVM, Coroutines, Retrofit, Hilt, Unit test
 
 ### What is covered in this project: 
 
